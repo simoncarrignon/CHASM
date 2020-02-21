@@ -5,5 +5,4 @@ Collection of various scripts to explore and analyse data from twitter:
 - `rwteet/`:  should link to  my fork of [rtweet](https://github.com/ropensci/rtweet) package to integrade the `counts.json` api endpoint used to generate timeseries. The `counts` branch should be checked out (`cd rtweet/ ; git checkout counts ; cd ..`)
 
 
-
-
+You can download IRA dataset [here](http://www.nimbios.org/~simon/bd4ss/data/ira_data.tgz)
