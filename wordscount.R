@@ -1,5 +1,6 @@
 library(tidyverse)
 library(tidytext)
+library(rtweet)
 
 
 #Take a timeline and return all unique words from this timeline
@@ -17,31 +18,46 @@ getAllWords <- function(timeline,replace_reg=NULL,unnest_reg=NULL){
 
 #count number of words
 getWordsCounts <- function(listwords,wordspace){
-    counts=table(factor(listwords[,"word"],levels=wordspace))
+    counts=NULL
+    if(is.null(dim(listwords)))
+       counts=table(factor(listwords[,"word"],levels=wordspace)) #ira dataset
+   else
+       counts=table(factor(listwords[["word"]],levels=wordspace)) #rtweet output
     return(counts/sum(counts))
-    }
-
-allfiles=list.files("ira_data/")
-allTL=lapply(allfiles,function(i)getAllWords(read.csv(file.path("ira_data/",i))))
-names(allTL)=allfiles
-names(allTL)=sapply(allfiles,substring,first=1,last=10)
-
-words=unique(unlist(lapply(allTL,"[", "word")))
-
-wordscounts=table(unlist(lapply(allTL,"[", "word")))
+}
 
 
-countedword=lapply(allTL,getWordsCounts,wordspace=words)
+allfiles=list.files("ira_data/",full.names=T) #get all filenames
+alldf=lapply(allfiles,read.csv)#import all files as dataframe (may take times)
 
-mostused=sort(wordscounts,decreasing=T)
-mostused=mostused[mostused>1]
+allTL=lapply(alldf,getAllWords) # extract all words for all datagrames and stor in a list
 
-names(countedword)=paste(names(allTL),lapply(countedword,function(n)paste0(names(sort(n,decreasing=T)[1:5]),collapse=" ")))
+names(allTL)=basename(allfiles) #give to each element of our list the names of the files
+names(allTL)=sapply(names(allTL),substring,first=1,last=10) #shorten the name
 
-limitedmatrix=sapply(countedword,"[",names(mostused))
+allwords=unlist(allTL) #generate a unique list of all words used by all twitter accounts in our databse
+vocab=unique(allwords)
+countedword=lapply(allTL,getWordsCounts,wordspace=vocab) #now we count for each twitter account which words they use in their own vocabulary and at wich frequency, and which words they don't use
+
+names(countedword)=paste(names(allTL),lapply(countedword,function(n)paste0(names(sort(n,decreasing=T)[1:5]),collapse=" "))) #here we add the top five words used by each account to visualise them on a graph
+
+wordscounts=table(allwords) #count how many each of these word have been used
+mostused=sort(wordscounts,decreasing=T) #rank the words by their usage
+mostused=mostused[mostused>20] #take the words that have been used more than 20 times
+limitedmatrix=sapply(countedword,"[",names(mostused)) #we restrain our analyse to those words
 plot(hclust(dist(t(limitedmatrix))),cex=.8)
 
+#redo with known people 
 
 
 
+users <- c("simoncarrignon","holyhologram","LeCuisinotron","damianjruck","ralexbentley","mcotsar","duransamson","xilrian","heuredelasieste","damiengrapton","svalver","ricard_sole","brigan_raman")
+alltl=lapply(users,get_timelines,n=3000)
+heuredelasieste=get_timelines(,n=3000)
 
+alltl_words=lapply(alltl,getAllWords)
+names(alltl_words)=c(users,"heuredelasieste")
+allwords=unlist(alltl_words) 
+vocab=unique(allwords)
+countedword=sapply(alltl_words,getWordsCounts,wordspace=vocab)
+plot(hclust(dist(t(countedword))),cex=.8)
