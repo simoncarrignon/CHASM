@@ -1,0 +1,6 @@
+[submodule "botdetect/rtweet"]
+	path = botdetect/rtweet
+	url = git@github.com:simoncarrignon/rtweet.git
+[submodule "rtweet"]
+	path = rtweet
+	url = git@github.com:simoncarrignon/rtweet.git
