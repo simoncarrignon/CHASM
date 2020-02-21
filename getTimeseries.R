@@ -26,11 +26,12 @@ allacountsTL = list()
 for( c in candidates){
     all=list()
 
-    #a proximate hadnling of the request. This could/should be avoid using the next_token send back by Twitter
-    for(YY in 2017:2017){
-        for (MM in 10:12){
+    #a proximate handling of the request. This 1/ could/should be avoid using the next_token send back by Twitter and not month by month 2/ should groups users 
+    for(YY in 2015:2017){
+        for (MM in 1:12){
             dat=paste0(YY,sprintf("%02d",MM),"010000")
             if(MM==02)dat2=paste0(YY,sprintf("%02d",MM),"280000")
+            else if(MM%in%c(1,3,5,7,8,10,12))dat2=paste0(YY,sprintf("%02d",MM),"310000")
             else dat2=paste0(YY,sprintf("%02d",MM),"300000")
             all[[as.character(dat)]]=search_fullarchive(q=paste0("from:",c),fromDate=dat, toDate=dat2,env_name=environment,count=TRUE,parse=F)
             Sys.sleep(1) #traiting twitter api with care 
