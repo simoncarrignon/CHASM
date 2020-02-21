@@ -1,4 +1,13 @@
 library(tweetbotornot)
+#  this function take a file from the IRA dataset and covnert it in rtweet format (then readable by botornot)
+ira2rtweets <- function(tl){
+    ##so far this is the only modif I did
+    tl$created_at=as.POSIXct(tl$created_at)
+    return(tl)
+}
+
+
+#you have to use token registrations before being able to do what follows: 
 
 ## get online timelines
 LeCuisinotron <- get_timelines("LeCuisinotron", n = 3000)
@@ -11,13 +20,6 @@ users <- c("simoncarrignon","holyhologram","LeCuisinotron","damianjruck")
 
 botornot(users)
 
-
-#  this function take a file from the IRA dataset and covnert it in rtweet format (then readable by botornot)
-ira2rtweets <- function(tl){
-    ##so far this is the only modif I did
-    tl$created_at=as.POSIXct(tl$created_at)
-    return(tl)
-}
 
 ##offline bot detect using ira data:
 alltestL=sapply(list.files("ira_data",full.names=T),function(i)
