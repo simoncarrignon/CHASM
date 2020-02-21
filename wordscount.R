@@ -51,12 +51,10 @@ plot(hclust(dist(t(limitedmatrix))),cex=.8)
 
 
 
-users <- c("simoncarrignon","holyhologram","LeCuisinotron","damianjruck","ralexbentley","mcotsar","duransamson","xilrian","heuredelasieste","damiengrapton","svalver","ricard_sole","brigan_raman")
+users <- c("simoncarrignon","holyhologram","LeCuisinotron","damianjruck","ralexbentley","mcotsar","duransamson","xilrian","heuredelasieste","damiengrapton","svalver","ricard_sole","brigan_raman","acerbialberto")
 alltl=lapply(users,get_timelines,n=3000)
-heuredelasieste=get_timelines(,n=3000)
-
 alltl_words=lapply(alltl,getAllWords)
-names(alltl_words)=c(users,"heuredelasieste")
+names(alltl_words)=users
 allwords=unlist(alltl_words) 
 vocab=unique(allwords)
 countedword=sapply(alltl_words,getWordsCounts,wordspace=vocab)
