@@ -43,7 +43,6 @@ appendWatchList <- function(nameslist,timeline_list){
     }
 
 #this function takes two dataframe with count of tweet for user name and merge them by summing the number of tweets for those that match in the two list or adding the one that are absent in one df or the other
-    updateWatchList <- function(newcount,initial_namelist,n){
     updateCounts  <- function(oldcounts,newcount){
         oldcounts$counts[which(oldcounts$screen_name %in% newcounts$screen_name)] =
         newcounts$counts[which(newcounts$screen_name %in% oldcounts$screen_name)] +
@@ -79,7 +78,7 @@ token <- create_token(
 
 
 ##Initialise the list with some first " small" analayse 
-files=list.files(pattern=paste0(filetoparse,"_[1234].*.json"))
+files=list.files(pattern=paste0(filetoparse,"_[01234].*.json"))
 active_users=lapply(files,function(f)
                     {
                         tryCatch(
