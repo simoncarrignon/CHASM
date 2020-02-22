@@ -78,7 +78,7 @@ token <- create_token(
 
 
 ##Initialise the list with some first " small" analayse 
-files=list.files(pattern=paste0(filetoparse,"_[01234].*.json"))
+files=list.files(pattern=paste0(filetoparse,"_[01234].json"))
 active_users=lapply(files,function(f)
                     {
                         tryCatch(
@@ -91,15 +91,14 @@ active_users=lapply(files,function(f)
                                  })
                     })
 counts=getNewCounts(unlist(active_users))
-tmpcounts=updateCounts(counts,c())
 watchlist=updateWatchList(counts,c(),10)
-watchtimlines=lapply(watchlist,get_timeline,n=3000)
-oldfiles=list.files(pattern=paste0(filetoparse,"_[012345].*.json"))
+watchtimlines=appendWatchList(watchlist,list())
+oldfiles=files
 
-##Monitore
+##Monitor
 wait=0
 while(TRUE){
-    files=c(list.files(pattern=paste0(filetoparse,"_.*.json"),oldfiles))
+    files=c(list.files(pattern=paste0(filetoparse,"_.*.json")),oldfiles)
     newfiles = files[ !(files %in% oldfiles)]
     oldfiles=unique(files)
     if(length(newfiles)>0){
@@ -131,7 +130,6 @@ while(TRUE){
                 print(paste("updating watchlist timeline"))
                 watchtimlines=appendWatchList(watchlist,watchtimlines)
                 print(paste("done updating watchlist timeline"))
-                writeAll(watchtimlines,"%Y%m%d-%H")
             }
         }
         save(file="supsects.bin",watchtimlines)
