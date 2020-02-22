@@ -43,7 +43,7 @@ appendWatchList <- function(nameslist,timeline_list){
     }
 
 #this function takes two dataframe with count of tweet for user name and merge them by summing the number of tweets for those that match in the two list or adding the one that are absent in one df or the other
-    updateCounts  <- function(oldcounts,newcount){
+    updateCounts  <- function(oldcounts,newcounts){
         oldcounts$counts[which(oldcounts$screen_name %in% newcounts$screen_name)] =
         newcounts$counts[which(newcounts$screen_name %in% oldcounts$screen_name)] +
         oldcounts$counts[which(oldcounts$screen_name %in% newcounts$screen_name)]
@@ -94,12 +94,12 @@ counts=getNewCounts(unlist(active_users))
 tmpcounts=updateCounts(counts,c())
 watchlist=updateWatchList(counts,c(),10)
 watchtimlines=lapply(watchlist,get_timeline,n=3000)
-oldfiles=c(list.files(pattern=paste0(filetoparse,"_[012345].*.json"))
+oldfiles=list.files(pattern=paste0(filetoparse,"_[012345].*.json"))
 
 ##Monitore
 wait=0
 while(TRUE){
-    files=c(list.files(pattern=paste0(filetoparse,"_.*.json"),oldfiles)
+    files=c(list.files(pattern=paste0(filetoparse,"_.*.json"),oldfiles))
     newfiles = files[ !(files %in% oldfiles)]
     oldfiles=unique(files)
     if(length(newfiles)>0){
