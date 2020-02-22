@@ -88,7 +88,7 @@ while(TRUE){
 #' @param timeline_list a list of timelines 
 #' @return return a new list of timelines with the tweets of each names  in namelist.
 #  if one of the elements of nameslist was not already in timeline_list we add id and collect hist last 3000 tweets
-#  if not we check if the account tweeted since the last time w
+#  if not we check if the account tweeted since the last time and add the new one to users dataframe
 appendWatchList <- function(nameslist,timeline_list){
     for(name in nameslist){
         prev_timeline=timeline_list[[name]]
@@ -106,12 +106,14 @@ appendWatchList <- function(nameslist,timeline_list){
     return(timeline_list)
 }
 
+#from a list of apparition of useres return a dataframe with count of tweets for each name
     getNewCounts <- function(listusers){
         tmpcounts=table(listusers)
         counts=data.frame(screen_name=as.character(names(tmpcounts)),counts=as.numeric(tmpcounts))
         return(counts)
     }
 
+#this function compare a list of name that are watched with a dataframe with count of tweets and names and return the names of accoutns form this dataframe that are not in the watched list
     updateWatchList <- function(newcount,initial_namelist,n){
         newtop=newcount$screen_name[order(newcount$counts,decreasing=T)][1:n]
         #newtop=newcount$screen_name[newcount$counts>50]
@@ -121,6 +123,8 @@ appendWatchList <- function(nameslist,timeline_list){
         return(unique(res))
     }
 
+#this function takes two dataframe with count of tweet for user name and merge them by summing the number of tweets for those that match in the two list or adding the one that are absent in one df or the other
+    updateWatchList <- function(newcount,initial_namelist,n){
     updateCounts  <- function(oldcounts,newcount){
         oldcounts$counts[which(oldcounts$screen_name %in% newcounts$screen_name)] =
         newcounts$counts[which(newcounts$screen_name %in% oldcounts$screen_name)] +
@@ -132,6 +136,7 @@ appendWatchList <- function(nameslist,timeline_list){
         return(newres)
     }
 
+#Take a list of timeline and write a csv with the count of tweets per hours (or something else defined by `timeformat`
     writeAll <- function(listoftimelines,timeformat="%Y%m%d-%H"){
         alldates=sort(unique(unlist(sapply(watchtimlines,function(i)unique(lapply(i$created_at,format,format=timeformat ))))))
         formatted=sapply(watchtimlines,function(i)sapply(i$created_at,format,format=timeformat ))
