@@ -62,7 +62,7 @@ appendWatchList <- function(nameslist,timeline_list){
         id=0
         outname=paste0(filename,"_activity",id,".csv")
         while(file.exists(outname)){
-            outname=paste0(filename,"activity",id,".csv")
+            outname=paste0(filename,"_activity",id,".csv")
             id=id+1
         }
         write.csv(file=outname,t(counts))
